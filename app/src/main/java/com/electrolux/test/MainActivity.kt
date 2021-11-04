@@ -20,7 +20,8 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(divider)
 
-            (adapter as GalleryAdapter).submitList(MutableList<Image>(27, {Image("Image url number $it")}))
+
+            (adapter as GalleryAdapter).submitList(MutableList<Image>(27, {Image("https://picsum.photos/300/200?random=$it")}))
         }
 
     }

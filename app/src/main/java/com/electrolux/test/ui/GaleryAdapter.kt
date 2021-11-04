@@ -3,10 +3,12 @@ package com.electrolux.test.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.electrolux.test.R
 import com.electrolux.test.data.Image
 
@@ -28,7 +30,10 @@ class GalleryAdapter: ListAdapter<Image, RecyclerView.ViewHolder>(GalleryDiffCal
 
     class GalleryViewHolder(var convertView: View): RecyclerView.ViewHolder(convertView) {
         fun bind(img: Image) {
-            convertView.findViewById<TextView>(R.id.tv_image).text = img.url
+           val iv = convertView.findViewById<ImageView>(R.id.iv_photo)
+            Glide.with(itemView)
+                .load(img.url)
+                .into(iv)
         }
     }
 
