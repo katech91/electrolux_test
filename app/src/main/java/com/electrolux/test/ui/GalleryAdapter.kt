@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -33,9 +32,9 @@ class GalleryAdapter: ListAdapter<Image, RecyclerView.ViewHolder>(GalleryDiffCal
     class GalleryViewHolder(var convertView: View): RecyclerView.ViewHolder(convertView) {
         fun bind(img: Image) {
            val iv = convertView.findViewById<ImageView>(R.id.iv_photo)
-            Glide.with(itemView)
-                .load(img.url)
-                .into(iv)
+                Glide.with(itemView)
+                    .load(img.url ?: img.url_sq)
+                    .into(iv)
         }
     }
 
@@ -45,7 +44,9 @@ class GalleryAdapter: ListAdapter<Image, RecyclerView.ViewHolder>(GalleryDiffCal
         }
 
         override fun areContentsTheSame(oldItem: Image, newItem: Image): Boolean {
-            return oldItem.hashCode() == newItem.hashCode()
+            val hold = oldItem.hashCode()
+            val hnew = newItem.hashCode()
+            return hnew == hold
         }
 
     }

@@ -10,5 +10,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class FlickrPhoto(
     @field:SerializedName("url_m")
-    override var url: String
+    override var url: String?,
+    @field:SerializedName("url_sq")
+    override var url_sq: String
 ): Image()
