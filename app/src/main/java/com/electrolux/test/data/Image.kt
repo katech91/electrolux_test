@@ -2,9 +2,9 @@ package com.electrolux.test.data
 
 import android.util.Log
 
-data class Image(
-    var url: String
+abstract class Image(
     ) {
+    abstract var url: String
     init {
 
         println(url)

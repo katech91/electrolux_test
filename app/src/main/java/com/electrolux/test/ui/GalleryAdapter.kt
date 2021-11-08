@@ -1,5 +1,6 @@
 package com.electrolux.test.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ class GalleryAdapter: ListAdapter<Image, RecyclerView.ViewHolder>(GalleryDiffCal
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        Log.d("onBindViewHolder", "position: $position")
         (holder as GalleryViewHolder).bind(getItem(position))
     }
 
