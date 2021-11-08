@@ -35,22 +35,22 @@ class MainActivity : AppCompatActivity() {
 //            (adapter as GalleryAdapter).submitList(MutableList<Image>(21, {Image("https://picsum.photos/300/200?random=$it")}))
         }
 
-        val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+//        val logging = HttpLoggingInterceptor()
+//        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+//
+//        val client: OkHttpClient = OkHttpClient.Builder()
+//            .addInterceptor(logging)
+//            .build()
+//
+//        val retrofit = Retrofit.Builder()
+//            .client(client)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .baseUrl("https://api.flickr.com")
+//            .build()
+//
+//        val service: IFlickrRequest = retrofit.create(IFlickrRequest::class.java)
 
-        val client: OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("https://api.flickr.com")
-            .build()
-
-        val service: IFlickrRequest = retrofit.create(IFlickrRequest::class.java)
-
-        val res = service.searchPhotos(tag = "Electrolux")
+        val res =  (application as App).flickrApi.searchPhotos(tag = "Electrolux")
         res.enqueue( object : Callback<FlickrSearchResponse> {
             override fun onResponse(
                 call: Call<FlickrSearchResponse>?,
