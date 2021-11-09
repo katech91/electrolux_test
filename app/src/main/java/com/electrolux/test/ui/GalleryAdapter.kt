@@ -13,28 +13,35 @@ import com.electrolux.test.R
 import com.electrolux.test.data.Image
 
 /**
- * Adapter  for the RecyclerView in MainActivity
+ * Adapter  for the RecholderyclerView in MainActivity
  */
 
-class GalleryAdapter: ListAdapter<Image, RecyclerView.ViewHolder>(GalleryDiffCallback()) {
+class GalleryAdapter(val listener: (Image) -> Unit): ListAdapter<Image, RecyclerView.ViewHolder>(GalleryDiffCallback()) {
+
+    var photos: List<Image>? = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val convertView = inflater.inflate(R.layout.item_image, parent, false)
-        return GalleryViewHolder(convertView)
+        return GalleryViewHolder(convertView, parent)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         Log.d("onBindViewHolder", "position: $position")
-        (holder as GalleryViewHolder).bind(getItem(position))
+        (holder as GalleryViewHolder).bind(getItem(position), listener)
     }
 
-    class GalleryViewHolder(var convertView: View): RecyclerView.ViewHolder(convertView) {
-        fun bind(img: Image) {
+    class GalleryViewHolder(var convertView: View, parent: ViewGroup): RecyclerView.ViewHolder(convertView) {
+
+        fun bind(img: Image, listener: (Image) -> Unit) {
            val iv = convertView.findViewById<ImageView>(R.id.iv_photo)
                 Glide.with(itemView)
                     .load(img.url ?: img.url_sq)
                     .into(iv)
+            itemView.setOnClickListener {
+                it.elevation = 8f
+                listener.invoke(img)
+            }
         }
     }
 
