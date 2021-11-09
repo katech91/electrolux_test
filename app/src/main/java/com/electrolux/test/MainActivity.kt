@@ -2,68 +2,46 @@ package com.electrolux.test
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.electrolux.test.api.IFlickrRequest
-import com.electrolux.test.data.FlickrSearchResponse
-import com.electrolux.test.data.Image
 import com.electrolux.test.ui.GalleryAdapter
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.electrolux.test.viewModels.GalleryViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+
+    private val adapter = GalleryAdapter()
+    private var searchJob: Job? = null
+    private val viewModel: GalleryViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val rv_image_list = findViewById<RecyclerView>(R.id.rv_image_list)
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        val rv_image_list = findViewById<RecyclerView>(R.id.rv_image_list)
         with(rv_image_list){
-            adapter = GalleryAdapter()
+            adapter = this@MainActivity.adapter
             layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(divider)
-
-
-//            (adapter as GalleryAdapter).submitList(MutableList<Image>(21, {Image("https://picsum.photos/300/200?random=$it")}))
         }
 
-//        val logging = HttpLoggingInterceptor()
-//        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-//
-//        val client: OkHttpClient = OkHttpClient.Builder()
-//            .addInterceptor(logging)
-//            .build()
-//
-//        val retrofit = Retrofit.Builder()
-//            .client(client)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .baseUrl("https://api.flickr.com")
-//            .build()
-//
-//        val service: IFlickrRequest = retrofit.create(IFlickrRequest::class.java)
+            search("Electrolux")
+    }
 
-        val res =  (application as App).flickrApi.searchPhotos(tag = "Electrolux")
-        res.enqueue( object : Callback<FlickrSearchResponse> {
-            override fun onResponse(
-                call: Call<FlickrSearchResponse>?,
-                response: Response<FlickrSearchResponse>?
-            ) {
 
-                println(response?.body()!!)
-                (rv_image_list.adapter as GalleryAdapter).submitList(response.body()!!.photos.photo)
+    private fun search(query: String) {
+        searchJob?.cancel()
+        searchJob = lifecycleScope.launch {
+            viewModel.searchPhotos(query).collect {
+                adapter.submitList(it)
             }
-
-            override fun onFailure(call: Call<FlickrSearchResponse>?, t: Throwable?) {
-
-            }
-        })
+        }
     }
 }
